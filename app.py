@@ -660,7 +660,12 @@ with tab3:
             
             with col1:
                 st.markdown(f"""
-                <div style="background: rgba(30, 41, 59, 0.8); padding: 15px; border-radius: 10px; text-align: center;">
-                    <h4 style="color: #94a3b8; margin: 0 0 10px 0;">📊 vs RATA-RATA</h4>
-                    <h3 style="color: {'#10b981' if diff >= 0 else '#dc2626'}; margin: 0; font-size: 24px;">
-                        {diff_percent:+.1f}%
+            <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%); 
+                        padding: 30px; border-radius: 15px; border: 2px solid #f59e0b; margin: 20px 0; text-align: center;">
+                <h2 style="color: #fbbf24; margin: 0 0 10px 0;">🎯 HASIL PREDIKSI</h2>
+                <div style="font-size: 48px; color: #f59e0b; font-weight: 900; margin: 20px 0;">
+                    {prediction:,.0f}
+                </div>
+                <h3 style="color: #94a3b8; margin: 0;">orang/km²</h3>
+            </div>
+            """, unsafe_allow_html=True)
