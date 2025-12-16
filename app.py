@@ -747,4 +747,76 @@ with tab2:
             """, unsafe_allow_html=True)
     
     # Visualisasi koefisien dengan tema sesuai mode
-    st.markdown("### 📉 VISUALISASI
+    st.markdown("### 📉 VISUALISASI KOEFISIEN")
+    
+    fig2, ax2 = plt.subplots(figsize=(12, 7))
+    
+    # Set background color berdasarkan tema
+    if st.session_state.theme == 'dark':
+        fig2.patch.set_facecolor('#0f172a')
+        ax2.set_facecolor('#1e293b')
+        text_color_plot = '#e2e8f0'
+        grid_color = '#475569'
+        spine_color = '#475569'
+    else:
+        fig2.patch.set_facecolor('#f8fafc')
+        ax2.set_facecolor('#ffffff')
+        text_color_plot = '#0f172a'
+        grid_color = '#cbd5e1'
+        spine_color = '#cbd5e1'
+    
+    # Bar plot dengan warna berdasarkan nilai
+    colors = ['#10b981' if c > 0 else '#dc2626' for c in coefficients['Koefisien']]
+    bars = ax2.barh(coefficients['Fitur'], coefficients['Koefisien'], color=colors, height=0.6)
+    
+    # Styling
+    ax2.set_xlabel('Nilai Koefisien', color=text_color_plot, fontsize=12, fontweight='bold')
+    ax2.set_title('Pengaruh Fitur terhadap Kepadatan Penduduk', 
+                 color='#f59e0b', fontsize=14, fontweight='bold', pad=20)
+    
+    ax2.tick_params(colors=text_color_plot)
+    ax2.grid(True, alpha=0.2, color=grid_color, axis='x')
+    ax2.axvline(x=0, color='#f59e0b', linestyle='-', linewidth=2, alpha=0.5)
+    
+    # Remove spines
+    for spine in ax2.spines.values():
+        spine.set_edgecolor(spine_color)
+    
+    # Tambahkan nilai pada bar
+    for bar in bars:
+        width = bar.get_width()
+        ha = 'left' if width > 0 else 'right'
+        x_pos = width + (0.01 if width > 0 else -0.01)
+        bar_color = '#10b981' if width > 0 else '#dc2626'
+        ax2.text(x_pos, bar.get_y() + bar.get_height()/2, 
+                f'{width:.3f}', 
+                ha=ha, va='center', 
+                color=bar_color, fontweight='bold', fontsize=10)
+    
+    st.pyplot(fig2, use_container_width=True)
+    
+    # Interpretasi fitur paling berpengaruh
+    top_feature = coefficients.iloc[0]
+    
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(30, 41, 59, 0.8) 100%); 
+                padding: 20px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-top: 20px;">
+        <h4 style="color: {text_color}; margin: 0 0 10px 0;">🏆 FITUR PALING BERPENGARUH</h4>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="font-size: 48px; color: #f59e0b;">📊</span>
+            <div>
+                <h3 style="color: {text_color}; margin: 0;">{top_feature['Fitur']}</h3>
+                <p style="color: #94a3b8; margin: 5px 0;">
+                    Koefisien: <span style="color: #f59e0b; font-weight: 800; font-size: 18px;">{top_feature['Koefisien']:.4f}</span>
+                </p>
+                <p style="color: {text_color}; margin: 0;">
+                    Setiap peningkatan 1 standar deviasi pada fitur ini akan 
+                    <span style="color: {'#10b981' if top_feature['Koefisien'] > 0 else '#dc2626'}; font-weight: 800;">
+                    {top_feature['Pengaruh'].lower()}
+                    </span> kepadatan penduduk sebesar <strong>{abs(top_feature['Koefisien']):.2f}</strong> orang/km²
+                </p>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
